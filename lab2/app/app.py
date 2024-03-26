@@ -31,6 +31,10 @@ def args():
 def cookie():
     return render_template('cookie.html')
 
+@app.context_processor
+def inject_footer():
+    return dict(footer_text='Жирнов Глеб Альбертович, 221-353')
+
 @app.route('/phone_check', methods=['GET', 'POST'])
 def phone_check():
     if request.method == 'POST':
