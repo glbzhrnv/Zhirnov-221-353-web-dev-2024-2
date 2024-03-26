@@ -68,3 +68,7 @@ def visits():
 @login_required
 def secret():
     return render_template('secret_page.html')
+
+@app.context_processor
+def inject_footer():
+    return dict(footer_text='Жирнов Глеб Альбертович, 221-353')
