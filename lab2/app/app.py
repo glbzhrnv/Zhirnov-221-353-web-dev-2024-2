@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response 
+import re
 
 app = Flask(__name__)
 
@@ -11,8 +12,6 @@ def index():
 @app.route('/form', methods=['GET', 'POST'])
 def form():
     if request.method == 'POST':
-        # Действия при отправке формы
-        # Можно добавить обработку данных формы здесь
         pass
     return render_template('form.html')
 
@@ -24,12 +23,20 @@ def headers():
 # Страница с параметрами URL
 @app.route('/args')
 def args():
-    return render_template('args.html')
+    # Искусственный вывод URL
+    current_url = request.url
+
+    return render_template('args.html', current_url=current_url)
 
 # Страница с куки
 @app.route('/cookie')
 def cookie():
-    return render_template('cookie.html')
+    resp = make_response(render_template('cookie.html'))
+    if 'user' in request.cookies:
+        resp.delete_cookie('user')
+    else:
+        resp.set_cookie('user','NoName')
+    return resp
 
 @app.context_processor
 def inject_footer():
@@ -39,23 +46,22 @@ def inject_footer():
 def phone_check():
     if request.method == 'POST':
         phone_number = request.form.get('phone_number', '')
-        # Проверка длины номера и наличия только допустимых символов
-        if not (10 <= len(phone_number) <= 11 and phone_number.replace('+', '').replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace('.', '').isdigit()):
-            error_message = ""
-            if len(phone_number) not in [10, 11]:
-                error_message = "Недопустимый ввод. Неверное количество цифр."
-            else:
-                error_message = "Недопустимый ввод. В номере телефона встречаются недопустимые символы."
+        
+        # Удаление лишних символов
+        phone_digits = re.sub(r'[\s()+.-]', '', phone_number)
+        
+        # Проверка длины номера
+        if not (10 <= len(phone_digits) <= 11):
+            error_message = "Недопустимый ввод. Неверное количество цифр."
             return render_template('phone_form.html', error_message=error_message, phone_number=phone_number, is_invalid=True)
         
         # Преобразование номера к формату 8-***-***-**-**
-        if phone_number[0] == '+':
-            formatted_phone_number = '8-' + phone_number[2:5] + '-' + phone_number[6:9] + '-' + phone_number[10:12] + '-' + phone_number[12:]
-        else:
-            formatted_phone_number = '8-' + phone_number[1:4] + '-' + phone_number[4:7] + '-' + phone_number[7:9] + '-' + phone_number[9:]
+        formatted_phone_number = '8-' + phone_digits[-10:-7] + '-' + phone_digits[-7:-4] + '-' + phone_digits[-4:-2] + '-' + phone_digits[-2:]
+        
         return render_template('phone_form.html', formatted_phone_number=formatted_phone_number)
     
     return render_template('phone_form.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

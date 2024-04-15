@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-success">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Лабораторная работа №2</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,19 +36,19 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/form">Form</a>
+                        <a class="nav-link" href="{{ url_for('form') }}">Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/headers">Headers</a>
+                        <a class="nav-link" href="{{ url_for('headers') }}">Headers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/args">Args</a>
+                        <a class="nav-link" href="{{ url_for('args') }}">Args</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/cookie">Cookie</a>
+                        <a class="nav-link" href="{{ url_for('cookie') }}">Cookie</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/phone_check">Phone_check</a>
+                        <a class="nav-link" href="{{ url_for('phone_check') }}">Phone_check</a>
                     </li>
                 </ul>
             </div>
