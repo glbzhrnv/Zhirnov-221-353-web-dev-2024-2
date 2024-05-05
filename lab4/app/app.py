@@ -75,6 +75,11 @@ def register():
         first_name = request.form.get('firstNameInput')
         last_name = request.form.get('lastNameInput')
         middle_name = request.form.get('middleNameInput')
+
+        if len(login) < 6:
+            flash('Логин должен содержать минимум 6 символов', 'danger')
+            return redirect(request.url)
+        
         # Проверка длины пароля
         if len(password) < 8:
             flash('Пароль должен содержать минимум 8 символов', 'danger')
