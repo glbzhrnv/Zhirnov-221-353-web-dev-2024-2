@@ -26,7 +26,7 @@ def check_permission(action):
             user = load_user(user_id)
             if not current_user.can(action, user):
                 flash('Недостаточно прав доступа', 'danger')
-                return redirect(url_for('index'))
+                return redirect(url_for('users'))
             return func(*args, **kwargs)
         return wrapper
     return decorator

@@ -1,5 +1,5 @@
 {% extends 'stats/base.html' %}
-{% from 'pagination.html' import pagination%}
+{% from 'pagination.html' import pagination %}
 
 {% block stat %}
 
@@ -7,31 +7,31 @@
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Название</th>
       <th scope="col">Пользователь</th>
-      <th scope="col">Время</th>
+      <th scope="col">Страница</th>
+      <th scope="col">Дата</th>
     </tr>
   </thead>
   <tbody>
     {% for stat in stats %}
     <tr>
-      <th scope="row">{{ loop.index }}</th>
+      <th scope="row">{{ loop.index + (page - 1) * per_page }}</th>
+      <td>
+        {% if stat.user_id %}
+          {{ stat.first_name }} {{ stat.middle_name }} {{ stat.last_name }}
+        {% else %}
+          Неаутентифицированный пользователь
+        {% endif %}
+      </td>
       <td>{{ stat.path }}</td>
-
-      {% if stat.user_id%}
-        <td>{{ stat.user_id }}</td>
-      {% else%}
-        <td>Неавторизованный пользователь</td>
-      {% endif %}
-
-      <td>{{ stat.created_at }}</td>
+      <td>{{ stat.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
 <form action="#" method="get" style="float: right;">
-  <a class="btn btn-primary" href="{{url_for('stats.export_csv')}}">Экспорт в CSV</a>
+  <a class="btn btn-primary" href="{{ url_for('stats.export_csv') }}">Экспорт в CSV</a>
 </form>
 
 {{ pagination(page, last_page, request.endpoint) }}
