@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <section class="reviews mb-5">
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">Все отзывы</h2>
+
+        <div class="d-flex justify-content-end mb-3">
+            <form method="get" class="form-inline">
+                <label for="sort_by" class="mr-2">Сортировать по:</label>
+                <select name="sort_by" id="sort_by" class="form-control" onchange="this.form.submit()">
+                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Новизне</option>
+                    <option value="positive" {% if sort_by == 'positive' %}selected{% endif %}>Положительные</option>
+                    <option value="negative" {% if sort_by == 'negative' %}selected{% endif %}>Отрицательные</option>
+                </select>
+            </form>
+        </div>
+
+        {% for review in reviews %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">Пользователь: {{ review.user.full_name }}</p>
+                    <p class="card-text">Оценка: {{ review.rating }}</p>
+                    <p class="card-text">{{ review.text }}</p>
+                    <p class="card-text"><small>{{ review.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if pagination.pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('courses.course_reviews', course_id=course_id, page=pagination.prev_num, sort_by=sort_by) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page in pagination.iter_pages() %}
+                        <li class="page-item {% if page == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('courses.course_reviews', course_id=course_id, page=page, sort_by=sort_by) }}">{{ page }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if pagination.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('courses.course_reviews', course_id=course_id, page=pagination.next_num, sort_by=sort_by) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+        <section class="add-review mb-5">
+            <h2 class="mb-3 text-center text-uppercase font-weight-bold">Оставить отзыв</h2>
+            <form action="{{ url_for('courses.add_review', course_id=course_id) }}" method="post">
+                <div class="form-group">
+                    <label for="rating">Оценка</label>
+                    <select class="form-control" name="rating" id="rating">
+                        <option value="5">Отлично</option>
+                        <option value="4">Хорошо</option>
+                        <option value="3">Удовлетворительно</option>
+                        <option value="2">Неудовлетворительно</option>
+                        <option value="1">Плохо</option>
+                        <option value="0">Ужасно</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="text">Текст отзыва</label>
+                    <textarea class="form-control" name="text" id="text" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-dark mt-3">Отправить</button>
+            </form>
+        </section>
+    </section>
+</div>
+{% endblock %}
